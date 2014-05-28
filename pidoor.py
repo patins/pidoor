@@ -8,6 +8,7 @@ import config
 try:
     import RPi.GPIO as GPIO
 except ImportError:
+    # TODO dummy class
     pass
 
 approved_tags = []
@@ -24,8 +25,8 @@ class RFIDSerialReader(basic.LineReceiver):
     def lineReceived(self, line):
         log.msg('received scan info: %s' % line)
         if tag in approved_tags and last_open + config.OPEN_THRESHOLD < datetime.datetime.now():
-            reactor.callLater(0, GPIO.output, [config.RELAY_GPIO_PIN, GPIO.HIGH])
-            reactor.callLater(config.OPEN_TIME, GPIO.output, [config.RELAY_GPIO_PIN, GPIO.LOW])
+            reactor.callLater(0, GPIO.output, config.RELAY_GPIO_PIN, GPIO.HIGH)
+            reactor.callLater(config.OPEN_TIME, GPIO.output, config.RELAY_GPIO_PIN, GPIO.LOW)
 
 if __name__ == "__main__":
     rfid_serial_reader = RFIDSerialReader()
