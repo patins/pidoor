@@ -2,3 +2,6 @@
 venv/
 *.pyc
 *.pyo
+
+config.py
+authorized_tags.txt
