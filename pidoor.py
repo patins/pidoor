@@ -38,6 +38,6 @@ if __name__ == "__main__":
     GPIO.setup(config.RELAY_GPIO_PIN, GPIO.OUT)
 
     log.startLogging(sys.stdout)
-    log.addObserver(log.FileLogObserver(open(config.LOG_FILE, 'w')).emit)
+    log.addObserver(log.FileLogObserver(open(config.LOG_FILE, 'a')).emit)
 
     reactor.run()
