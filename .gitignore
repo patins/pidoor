@@ -5,3 +5,4 @@ venv/
 
 config.py
 authorized_tags.txt
+door.log
