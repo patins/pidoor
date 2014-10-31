@@ -16,7 +16,7 @@ last_open = datetime.datetime.now() - config.OPEN_THRESHOLD
 
 with open(config.TAG_FILE, 'r') as tag_file:
     for line in tag_file.read().split('\n'):
-        line = line.trim()
+        line = line.strip()
         if len(line) > 1:
             approved_tags += [line]
 
