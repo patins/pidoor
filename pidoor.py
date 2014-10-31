@@ -23,7 +23,7 @@ with open(config.TAG_FILE, 'r') as tag_file:
 class RFIDSerialReader(basic.LineReceiver):
     delimiter = '\r'
     def lineReceived(self, line):
-        tag = line.replace('\x02', '').reaplce('\x03', '').strip()
+        tag = line.replace('\x02', '').replace('\x03', '').strip()
         log.msg('received tag info: %s' % tag)
         if tag in approved_tags and last_open + config.OPEN_THRESHOLD < datetime.datetime.now():
             log.msg('opening door for tag: %s' % tag)
