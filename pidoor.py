@@ -8,8 +8,15 @@ import config
 try:
     import RPi.GPIO as GPIO
 except ImportError:
-    # TODO dummy class
-    pass
+    class GPIO:
+        def __getattr__(self,name):
+            def method(*args):
+                print 'method %s.%s called' %(self.__class__.__name__, name)
+                if args:
+                    print 'with args %s' % str(args)
+            return method
+    GPIO = GPIO()
+
 
 approved_tags = []
 last_open = datetime.datetime.now() - config.OPEN_THRESHOLD
