@@ -2,6 +2,7 @@ from twisted.internet import reactor
 from twisted.protocols import basic
 from twisted.internet.serialport import SerialPort
 from twisted.python import log
+import requests
 import datetime, sys
 import config
 
@@ -16,7 +17,6 @@ except ImportError:
                     print 'with args %s' % str(args)
             return method
     GPIO = GPIO()
-
 
 approved_tags = []
 last_open = datetime.datetime.now() - config.OPEN_THRESHOLD
@@ -36,6 +36,8 @@ class RFIDSerialReader(basic.LineReceiver):
             log.msg('opening door for tag: %s' % tag)
             reactor.callLater(0, GPIO.output, config.RELAY_GPIO_PIN, GPIO.HIGH)
             reactor.callLater(config.OPEN_TIME, GPIO.output, config.RELAY_GPIO_PIN, GPIO.LOW)
+            if config.ENDPOINT:
+                reactor.callLater(0, requests.post, config.ENDPOINT, data={'CODE': tag, 'KEY': config.KEY})
 
 if __name__ == "__main__":
     rfid_serial_reader = RFIDSerialReader()
