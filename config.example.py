@@ -9,3 +9,5 @@ LOG_FILE = "door.log"
 
 ENDPOINT = None
 KEY = ""
+
+WEBSOCKET_PORT = None
