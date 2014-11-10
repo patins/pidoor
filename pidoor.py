@@ -63,7 +63,7 @@ class RFIDSerialReader(basic.LineReceiver):
             reactor.callLater(0, GPIO.output, config.RELAY_GPIO_PIN, GPIO.HIGH)
             reactor.callLater(config.OPEN_TIME, GPIO.output, config.RELAY_GPIO_PIN, GPIO.LOW)
             if config.ENDPOINT:
-                reactor.callLater(0, requests.post, config.ENDPOINT, data={'CODE': tag, 'KEY': config.KEY, 'TIME': now.isoformat()})
+                reactor.callLater(0, requests.post, config.ENDPOINT, data={'CODE': tag, 'KEY': config.KEY, 'TIME': now.isoformat()}, verify=False)
             notify({'access_granted': True, 'time': now.isoformat()})
         elif tag not in approved_tags:
             notify({'access_granted': False, 'time': now.isoformat()})
