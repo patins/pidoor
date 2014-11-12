@@ -67,7 +67,7 @@ class RFIDSerialReader(basic.LineReceiver):
         now = datetime.datetime.now()
         user = authorize(tag)
         if user and last_open + config.OPEN_THRESHOLD < datetime.datetime.now():
-            log.msg('opening door for tag: %s' % tag)
+            log.msg('opening door for: %s' % user)
             reactor.callLater(0, GPIO.output, config.RELAY_GPIO_PIN, GPIO.HIGH)
             reactor.callLater(config.OPEN_TIME, GPIO.output, config.RELAY_GPIO_PIN, GPIO.LOW)
             if config.ENDPOINT:
