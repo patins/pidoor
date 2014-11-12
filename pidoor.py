@@ -24,14 +24,21 @@ except ImportError:
             return method
     GPIO = GPIO()
 
-approved_tags = []
+APPROVED_USERS = []
 last_open = datetime.datetime.now() - config.OPEN_THRESHOLD
 
 with open(config.TAG_FILE, 'r') as tag_file:
     for line in tag_file.read().split('\n'):
         line = line.strip()
         if len(line) > 1:
-            approved_tags += [line]
+            line = line.split(',')
+            APPROVED_USERS += [(line[0], ''.join(line[1:])]
+
+def authorize(tag):
+    for user in APPROVED_USERS:
+        if user[0] == tag:
+            return user[1]
+    return None
 
 NOTIFY_CLIENTS = []
 
@@ -58,14 +65,15 @@ class RFIDSerialReader(basic.LineReceiver):
         tag = line.replace('\x02', '').replace('\x03', '').strip()
         log.msg('received tag info: %s' % tag)
         now = datetime.datetime.now()
-        if tag in approved_tags and last_open + config.OPEN_THRESHOLD < datetime.datetime.now():
+        user = authorize(tag)
+        if user and last_open + config.OPEN_THRESHOLD < datetime.datetime.now():
             log.msg('opening door for tag: %s' % tag)
             reactor.callLater(0, GPIO.output, config.RELAY_GPIO_PIN, GPIO.HIGH)
             reactor.callLater(config.OPEN_TIME, GPIO.output, config.RELAY_GPIO_PIN, GPIO.LOW)
             if config.ENDPOINT:
-                reactor.callLater(0, requests.post, config.ENDPOINT, data={'CODE': tag, 'KEY': config.KEY, 'TIME': now.isoformat()}, verify=False)
-            notify({'access_granted': True, 'time': now.isoformat()})
-        elif tag not in approved_tags:
+                reactor.callLater(0, requests.post, config.ENDPOINT, data={'CODE': tag, 'user': user, 'KEY': config.KEY, 'TIME': now.isoformat()}, verify=False)
+            notify({'access_granted': True, 'user': user, 'time': now.isoformat()})
+        elif not user and last_open + config.OPEN_THRESHOLD < datetime.datetime.now():
             notify({'access_granted': False, 'time': now.isoformat()})
 
 if __name__ == "__main__":
