@@ -32,7 +32,7 @@ with open(config.TAG_FILE, 'r') as tag_file:
         line = line.strip()
         if len(line) > 1:
             line = line.split(',')
-            APPROVED_USERS += [(line[0], ''.join(line[1:])]
+            APPROVED_USERS += [(line[0], ''.join(line[1:]))]
 
 def authorize(tag):
     for user in APPROVED_USERS:
