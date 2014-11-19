@@ -63,6 +63,7 @@ def notify(msg):
 class RFIDSerialReader(basic.LineReceiver):
     delimiter = '\r'
     def lineReceived(self, line):
+        global LAST_OPEN
         tag = line.replace('\x02', '').replace('\x03', '').strip()
         log.msg('received tag info: %s' % tag)
         now = datetime.datetime.now()
