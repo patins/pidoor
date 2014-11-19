@@ -1,5 +1,6 @@
 from tornado.platform.twisted import TwistedIOLoop
 TwistedIOLoop().install()
+
 from twisted.internet import reactor
 from twisted.protocols import basic
 from twisted.internet.serialport import SerialPort
@@ -68,6 +69,7 @@ class RFIDSerialReader(basic.LineReceiver):
         user = authorize(tag)
         if user and last_open + config.OPEN_THRESHOLD < datetime.datetime.now():
             log.msg('opening door for: %s' % user)
+            last_open = datetime.datetime.now()
             reactor.callLater(0, GPIO.output, config.RELAY_GPIO_PIN, GPIO.HIGH)
             reactor.callLater(config.OPEN_TIME, GPIO.output, config.RELAY_GPIO_PIN, GPIO.LOW)
             if config.ENDPOINT:
